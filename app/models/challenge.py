@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -24,7 +24,7 @@ class Challenge(Base):
     owasp_ref: Mapped[str] = mapped_column(String(20), nullable=False)
     evaluator_key: Mapped[str] = mapped_column(String(100), nullable=False, default="")
     hints: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
-    target_route: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    target_route: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -49,9 +49,9 @@ class ChallengeAttempt(Base):
         Integer, ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False
     )
     exploit_triggered: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    exploit_timestamp: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    exploit_timestamp: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     points_awarded: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     user: Mapped["User"] = relationship("User")

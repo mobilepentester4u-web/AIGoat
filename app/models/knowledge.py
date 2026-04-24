@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -17,14 +17,14 @@ class KnowledgeBaseEntry(Base):
     __tablename__ = "knowledge_base_entries"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    product_id: Mapped[int | None] = mapped_column(
+    product_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=True
     )
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     category: Mapped[str] = mapped_column(String(100), nullable=False)
     is_user_injected: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    embedding_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    embedding_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     chunk_index: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     metadata_json: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(

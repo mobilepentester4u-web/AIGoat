@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -23,11 +23,11 @@ class Order(Base):
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    applied_coupon_id: Mapped[int | None] = mapped_column(
+    applied_coupon_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("coupons.id", ondelete="SET NULL"), nullable=True
     )
     discount_amount: Mapped[float] = mapped_column(Numeric(10, 2), default=0, nullable=False)
-    final_amount: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
+    final_amount: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="pending", nullable=False)
     shipping_first_name: Mapped[str] = mapped_column(String(100), nullable=False, default="")
     shipping_last_name: Mapped[str] = mapped_column(String(100), nullable=False, default="")
@@ -82,9 +82,9 @@ class Payment(Base):
     order_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("orders.id", ondelete="CASCADE"), unique=True, nullable=False
     )
-    card_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
-    card_type: Mapped[str | None] = mapped_column(String(20), nullable=True)
-    amount: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
+    card_number: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    card_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    amount: Mapped[Optional[float]] = mapped_column(Numeric(10, 2), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

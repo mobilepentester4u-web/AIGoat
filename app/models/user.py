@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -57,7 +57,7 @@ class UserProfile(Base):
     state: Mapped[str] = mapped_column(String(50), nullable=False, default="")
     zip_code: Mapped[str] = mapped_column(String(20), nullable=False, default="")
     country: Mapped[str] = mapped_column(String(50), nullable=False, default="US")
-    profile_picture: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    profile_picture: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     card_number: Mapped[str] = mapped_column(String(20), nullable=False, default="")
     card_type: Mapped[str] = mapped_column(String(20), nullable=False, default="")
     card_holder: Mapped[str] = mapped_column(String(100), nullable=False, default="")
