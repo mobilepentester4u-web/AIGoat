@@ -10,7 +10,7 @@ database:
 
 ollama:
   base_url: "http://localhost:11434"
-  model: "mistral"
+  model: "tinyllama"
   timeout: 90
 
 defense:
