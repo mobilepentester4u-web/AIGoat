@@ -30,7 +30,7 @@ class DatabaseConfig(BaseModel):
 
 class OllamaConfig(BaseModel):
     base_url: str = "http://localhost:11434"
-    model: str = "mistral"
+    model: str = "tinyllama"
     timeout: int = 60
 
     @field_validator("base_url")

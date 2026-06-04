@@ -19,8 +19,21 @@ class EmbeddingService:
 
     def _load_model(self) -> "SentenceTransformer":
         if self._model is None:
-            from sentence_transformers import SentenceTransformer
-            self._model = SentenceTransformer(self._model_name)
+            try:
+                from sentence_transformers import SentenceTransformer
+            except ImportError as exc:
+                raise RuntimeError(
+                    "Could not import sentence-transformers. Install project ML dependencies with "
+                    "`pip install -r requirements.txt` and ensure torch, accelerate, and peft are available."
+                ) from exc
+
+            try:
+                self._model = SentenceTransformer(self._model_name)
+            except Exception as exc:
+                raise RuntimeError(
+                    "Failed to initialize the sentence-transformers model. Verify that "
+                    "PyTorch and required dependencies are installed and compatible with the current environment."
+                ) from exc
         return self._model
 
     def embed_text(self, text: str) -> list[float]:

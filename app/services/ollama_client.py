@@ -56,11 +56,14 @@ class OllamaClient:
         if options:
             payload["options"] = options
         try:
+            logger.debug("Ollama generate request: %s %s", "/api/generate", payload)
             r = await self._http.post("/api/generate", json=payload)
             r.raise_for_status()
-            return r.json().get("response", "")
+            response_data = r.json()
+            logger.debug("Ollama generate response: %s", response_data)
+            return response_data.get("response", "")
         except Exception as e:
-            logger.error("Ollama generate failed: %s", e)
+            logger.error("Ollama generate failed: %s; request payload: %s", e, payload)
             return ""
 
     async def generate_stream(
@@ -79,6 +82,7 @@ class OllamaClient:
         if options:
             payload["options"] = options
         try:
+            logger.debug("Ollama generate stream request: %s %s", "/api/generate", payload)
             async with self._http.stream(
                 "POST", "/api/generate", json=payload
             ) as resp:
@@ -86,14 +90,19 @@ class OllamaClient:
                 async for line in resp.aiter_lines():
                     if not line:
                         continue
-                    chunk = json.loads(line)
+                    try:
+                        chunk = json.loads(line)
+                    except json.JSONDecodeError:
+                        logger.debug("Ollama stream non-JSON line: %s", line)
+                        continue
+                    logger.debug("Ollama stream chunk: %s", chunk)
                     token = chunk.get("response", "")
                     if token:
                         yield token
                     if chunk.get("done"):
                         return
         except Exception as e:
-            logger.error("Ollama stream failed: %s", e)
+            logger.error("Ollama stream failed: %s; request payload: %s", e, payload)
 
     async def chat(
         self,
@@ -111,12 +120,15 @@ class OllamaClient:
         if options:
             payload["options"] = options
         try:
+            logger.debug("Ollama chat request: %s %s", "/api/chat", payload)
             r = await self._http.post("/api/chat", json=payload)
             r.raise_for_status()
-            msg = r.json().get("message", {})
+            response_data = r.json()
+            logger.debug("Ollama chat response: %s", response_data)
+            msg = response_data.get("message", {})
             return msg.get("content", "")
         except Exception as e:
-            logger.error("Ollama chat failed: %s", e)
+            logger.error("Ollama chat failed: %s; request payload: %s", e, payload)
             return ""
 
 

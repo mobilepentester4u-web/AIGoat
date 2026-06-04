@@ -72,7 +72,7 @@ if command -v ollama >/dev/null 2>&1; then
         MODEL=$(python3 -c "
 import yaml
 with open('$PROJECT_ROOT/config/config.yml') as f:
-    print(yaml.safe_load(f).get('ollama',{}).get('model','mistral'))
+    print(yaml.safe_load(f).get('ollama',{}).get('model','tinyllama'))
 " 2>/dev/null || echo "mistral")
 
         AVAILABLE=$(curl -sf http://localhost:11434/api/tags | python3 -c "
